@@ -179,7 +179,7 @@ namespace Hand.MidTerm
             }              
                 Console.WriteLine();           
         }
-        static void ListCart()
+        static void ListCart() //lists items in user cart.
         {
             using (var db = new AppDbContext())
             {
@@ -193,19 +193,22 @@ namespace Hand.MidTerm
                     foreach(var product in cart.CartProducts)
                     {
                         Console.WriteLine($"{product.ProductId} - {product.Products.Description} - {product.Quantity}");
-                        productCount ++;
+                        productCount ++; //counts number of products in cart
                         var total = db.CartProducts.Where(c => c.CartId == cartId).Select(c => c.ProductTotal).Sum();
                         sum = total;
                     }     
                 }
                 if(sum > 50)
                 {
+                    Console.WriteLine();
+                    Console.WriteLine("***This order qualifies for free shipping***");
                     Console.WriteLine($"Products in Cart: {productCount} \t\t Total Cost: ${sum}");
                     Cart addTotal = db.Carts.Find(cartId);
                     addTotal.Total = sum;
                     db.SaveChanges();
                 } else
                 {
+                    Console.WriteLine();
                     Console.WriteLine();
                     decimal withShipping = (sum + 4.99M);
                     Console.WriteLine($"Products in Cart: {productCount} \t\t Total Cost: ${withShipping}");
@@ -216,7 +219,7 @@ namespace Hand.MidTerm
             }
         }
 
-        static void RemoveFromCart()
+        static void RemoveFromCart() //remove item from cart
         {
            if(logedIn == true)
             {
@@ -227,6 +230,7 @@ namespace Hand.MidTerm
                         Console.WriteLine("Remove Product Number: ");
                         int removeId = Convert.ToInt32(Console.ReadLine());
 
+                        //check to see if item is in cart
                         var inCart = db.CartProducts.Where(p => p.ProductId == removeId && p.CartId == cartId).FirstOrDefault();
                         CartProduct r = db.CartProducts.Find(cartId, removeId);
                         
@@ -235,7 +239,6 @@ namespace Hand.MidTerm
                             Console.WriteLine();
                             Console.WriteLine("This item is not in your cart.");
                             Console.WriteLine();
-
                         }
                         else
                         {
